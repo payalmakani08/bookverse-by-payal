@@ -1,0 +1,662 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#100d20">
+  <meta name="description" content="BookVerse — your personal digital library, created by Payal Makani.">
+  <title>BookVerse — by Payal Makani</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #100d20;
+      --panel: rgba(28, 24, 48, .78);
+      --panel2: #211b37;
+      --text: #f6f2ff;
+      --muted: #a59dbb;
+      --accent: #a78bfa;
+      --accent2: #f0abfc;
+      --border: rgba(255,255,255,.1);
+      --green: #86efac;
+      --red: #fda4af;
+      --shadow: 0 18px 55px rgba(0,0,0,.23);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    body.light {
+      --bg: #f5f2ff;
+      --panel: rgba(255,255,255,.88);
+      --panel2: #eee8ff;
+      --text: #241a3c;
+      --muted: #716783;
+      --border: rgba(65,45,100,.13);
+      --shadow: 0 18px 55px rgba(65,45,100,.1);
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible,
+    textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .ambient {
+      position: fixed; inset: 0; pointer-events: none; z-index: -2;
+      background:
+        radial-gradient(ellipse at 10% 15%, rgba(124,58,237,.2), transparent 35%),
+        radial-gradient(ellipse at 88% 25%, rgba(219,39,119,.13), transparent 32%),
+        radial-gradient(ellipse at 60% 95%, rgba(59,130,246,.15), transparent 38%);
+      animation: ambience 12s ease-in-out infinite alternate;
+    }
+    @keyframes ambience { to { filter: hue-rotate(35deg); transform: scale(1.08); } }
+
+    #particles { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+    .wrap { width: min(1160px, calc(100% - 36px)); margin: auto; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: color-mix(in srgb, var(--bg) 83%, transparent);
+      backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+    }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:15px; min-height:76px; }
+    .brand { display:flex; align-items:center; gap:11px; text-decoration:none; color:var(--text); font:700 23px 'Space Grotesk',sans-serif; letter-spacing:-1px; }
+    .brand-icon {
+      display:grid; place-items:center; width:42px; height:42px; border-radius:14px;
+      background:linear-gradient(135deg,#8b5cf6,#ec4899); box-shadow:0 6px 25px #8b5cf644; font-size:22px;
+    }
+    .brand span span { color:var(--accent); }
+    .nav-actions { display:flex; gap:9px; align-items:center; }
+    .btn {
+      border:1px solid var(--border); border-radius:12px; padding:10px 15px;
+      color:var(--text); background:var(--panel); transition:.22s ease;
+      display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    }
+    .btn:hover { transform:translateY(-2px); border-color:var(--accent); }
+    .btn.primary { background:linear-gradient(120deg,#8b5cf6,#c026d3); color:white; border:0; box-shadow:0 8px 25px #8b5cf633; }
+    .btn.danger { color:var(--red); }
+    .btn.small { padding:7px 10px; font-size:13px; }
+
+    .hero { padding:65px 0 32px; display:grid; grid-template-columns:1.15fr .85fr; align-items:center; gap:38px; }
+    .eyebrow { display:inline-flex; align-items:center; gap:9px; font-size:11px; font-weight:700; letter-spacing:2px; color:var(--accent); text-transform:uppercase; }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 14px var(--green); }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { font:700 clamp(40px,6vw,70px)/1.04 'Space Grotesk',sans-serif; letter-spacing:-3px; margin:19px 0; }
+    .gradient-text { background:linear-gradient(100deg,#c4b5fd,#f0abfc,#f9a8d4); -webkit-background-clip:text; color:transparent; }
+    .hero p { color:var(--muted); line-height:1.8; max-width:530px; font-size:16px; }
+    .credit { margin-top:25px; color:var(--muted); font-size:13px; }
+    .credit strong { color:var(--text); }
+    .hero-art { position:relative; height:285px; display:grid; place-items:center; }
+    .orb { position:absolute; width:250px; height:250px; border:1px solid #c4b5fd33; border-radius:50%; animation:spin 22s linear infinite; }
+    .orb:before,.orb:after { content:""; position:absolute; width:12px; height:12px; background:#e879f9; border-radius:50%; box-shadow:0 0 25px #e879f9; top:28px; left:30px; }
+    .orb:after { top:auto; left:auto; right:15px; bottom:45px; background:#818cf8; }
+    .orb.two { width:195px; height:195px; animation-direction:reverse; animation-duration:16s; border-color:#818cf844; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .book-stack { position:relative; transform:rotate(-8deg); filter:drop-shadow(0 22px 25px #0005); }
+    .book { width:165px; height:205px; border-radius:5px 15px 15px 5px; display:flex; flex-direction:column; justify-content:space-between; padding:20px 17px; border-left:7px solid #ffffff35; position:absolute; top:-100px; left:-80px; box-shadow:inset -8px 0 12px #0002; }
+    .book b { font:700 22px 'Space Grotesk'; }
+    .book small { font-size:10px; letter-spacing:2px; }
+    .book.one { background:linear-gradient(145deg,#8b5cf6,#4c1d95); transform:rotate(-14deg) translate(-24px,0); }
+    .book.two { background:linear-gradient(145deg,#ec4899,#9d174d); transform:rotate(10deg) translate(28px,8px); }
+    .book.three { background:linear-gradient(145deg,#38bdf8,#1d4ed8); transform:rotate(1deg) translate(0,-7px); }
+
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:15px 0 45px; }
+    .stat { border:1px solid var(--border); background:var(--panel); border-radius:18px; padding:20px; box-shadow:var(--shadow); backdrop-filter:blur(16px); }
+    .stat .label { color:var(--muted); font-size:12px; }
+    .stat .number { font:700 31px 'Space Grotesk'; margin-top:10px; }
+    .stat .symbol { float:right; font-size:23px; }
+
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:18px; margin-bottom:22px; }
+    h2 { font:700 clamp(25px,3vw,35px) 'Space Grotesk'; letter-spacing:-1px; margin-bottom:7px; }
+    .muted { color:var(--muted); font-size:13px; line-height:1.7; }
+    .workspace { display:grid; grid-template-columns:1fr 300px; gap:22px; align-items:start; }
+    .panel { border:1px solid var(--border); background:var(--panel); border-radius:20px; padding:22px; box-shadow:var(--shadow); backdrop-filter:blur(18px); }
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .field { width:100%; min-width:0; border:1px solid var(--border); border-radius:11px; padding:12px 13px; background:var(--bg); color:var(--text); }
+    .toolbar .search { flex:1 1 200px; }
+    .toolbar select { width:auto; flex:0 1 165px; }
+    label { display:block; color:var(--muted); font-size:12px; margin-bottom:7px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .form-group { min-width:0; }
+    .form-group.full { grid-column:1/-1; }
+    textarea.field { resize:vertical; min-height:80px; }
+    .form-actions { display:flex; gap:9px; margin-top:16px; }
+    .form-actions .primary { flex:1; }
+    .book-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+    .book-card { min-width:0; border:1px solid var(--border); border-radius:17px; overflow:hidden; background:var(--panel); animation:rise .5s both; transition:transform .25s,border-color .25s; }
+    .book-card:hover { transform:translateY(-5px); border-color:#a78bfa88; }
+    @keyframes rise { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    .cover { height:175px; background:linear-gradient(135deg,#33215e,#17142a); display:flex; justify-content:center; align-items:center; position:relative; overflow:hidden; }
+    .cover img { width:100%; height:100%; object-fit:contain; padding:14px; transition:transform .35s; }
+    .book-card:hover .cover img { transform:scale(1.06); }
+    .cover-fallback { font-size:58px; opacity:.9; }
+    .status { position:absolute; top:10px; left:10px; padding:6px 9px; border-radius:30px; font-size:10px; background:#171329e8; color:#e9d5ff; border:1px solid #ffffff25; }
+    .book-info { padding:15px; }
+    .category { font-size:10px; text-transform:uppercase; letter-spacing:1.4px; color:var(--accent); }
+    .book-info h3 { font:600 18px 'Space Grotesk'; margin:8px 0 4px; overflow-wrap:anywhere; }
+    .author { color:var(--muted); font-size:12px; }
+    .description { font-size:12px; color:var(--muted); line-height:1.6; margin:12px 0; min-height:38px; }
+    .stars { color:#fbbf24; letter-spacing:2px; font-size:13px; }
+    .card-bottom { display:flex; justify-content:space-between; align-items:center; gap:8px; border-top:1px solid var(--border); padding-top:12px; margin-top:12px; }
+    .card-actions { display:flex; gap:5px; }
+    .icon-btn { border:1px solid var(--border); color:var(--text); background:transparent; border-radius:9px; padding:7px 9px; }
+    .icon-btn:hover { background:var(--panel2); }
+    .empty { text-align:center; padding:45px 15px; border:1px dashed var(--border); border-radius:16px; grid-column:1/-1; }
+    .empty .big { font-size:40px; margin-bottom:12px; }
+    .api-status { display:flex; align-items:center; gap:8px; padding:12px; border-radius:12px; background:var(--panel2); font-size:12px; margin-bottom:18px; overflow-wrap:anywhere; }
+    .api-status .dot { flex-shrink:0; }
+    .endpoint { border-bottom:1px solid var(--border); padding:12px 0; font-size:12px; display:flex; gap:9px; align-items:center; }
+    .method { font:700 10px monospace; padding:5px 6px; border-radius:5px; background:#14532d55; color:#86efac; min-width:48px; text-align:center; }
+    .method.post { background:#1e3a8a55; color:#93c5fd; }
+    .method.put { background:#78350f55; color:#fcd34d; }
+    .method.delete { background:#88133755; color:#fda4af; }
+    .endpoint code { overflow-wrap:anywhere; color:var(--muted); }
+    .api-link { display:inline-block; margin-top:16px; color:var(--accent); font-size:12px; }
+    .footer { text-align:center; padding:55px 0 30px; color:var(--muted); font-size:12px; line-height:2; }
+    .footer strong { color:var(--text); }
+    .toast { position:fixed; bottom:22px; right:22px; max-width:calc(100% - 44px); z-index:50; padding:15px 20px; background:var(--panel2); border:1px solid var(--border); box-shadow:var(--shadow); border-radius:13px; animation:rise .25s; }
+    .toast.error { border-color:#fb7185; }
+    .modal-backdrop { display:none; position:fixed; inset:0; z-index:30; background:#05030bcc; backdrop-filter:blur(8px); padding:20px; overflow:auto; }
+    .modal-backdrop.open { display:grid; place-items:center; }
+    .modal { width:min(530px,100%); background:var(--bg); border:1px solid var(--border); border-radius:20px; padding:25px; box-shadow:var(--shadow); }
+    .modal-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px; }
+    .modal-head h2 { font-size:24px; margin:0; }
+    .loading { color:var(--muted); padding:35px; text-align:center; grid-column:1/-1; }
+
+    @media(max-width:850px) {
+      .hero { grid-template-columns:1fr; padding-top:45px; gap:5px; }
+      .hero-art { height:245px; }
+      .workspace { grid-template-columns:1fr; }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .api-panel { order:2; }
+    }
+    @media(max-width:540px) {
+      .wrap { width:calc(100% - 24px); }
+      .nav { min-height:65px; }
+      .brand { font-size:19px; }
+      .brand-icon { width:36px; height:36px; }
+      .nav-actions { gap:6px; }
+      .nav-actions .btn { padding:9px 10px; font-size:12px; }
+      .hero { padding-top:38px; }
+      h1 { letter-spacing:-2px; }
+      .hero-art { height:220px; }
+      .orb { width:205px; height:205px; }
+      .orb.two { width:160px; height:160px; }
+      .stats { gap:9px; margin-bottom:35px; }
+      .stat { padding:14px; border-radius:14px; }
+      .stat .number { font-size:26px; }
+      .section-head { align-items:start; flex-direction:column; }
+      .panel { padding:16px; }
+      .book-grid { grid-template-columns:1fr; }
+      .cover { height:220px; }
+      .form-grid { grid-template-columns:1fr; }
+      .form-group.full { grid-column:auto; }
+      .toolbar select { flex:1 1 130px; }
+    }
+    @media(prefers-reduced-motion:reduce) {
+      *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; transition-duration:.01ms!important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient"></div>
+  <canvas id="particles"></canvas>
+
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="#home">
+        <span class="brand-icon">✦</span>
+        <span>Book<span>Verse</span></span>
+      </a>
+      <div class="nav-actions">
+        <button class="btn" id="themeBtn" aria-label="Toggle light theme">☼ <span class="theme-label">Theme</span></button>
+        <button class="btn primary" id="addTop">＋ Add book</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" id="home">
+    <section class="hero">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> YOUR PERSONAL DIGITAL LIBRARY</span>
+        <h1>Stories that stay.<br><span class="gradient-text">Knowledge that grows.</span></h1>
+        <p>Every book opens a new universe. Collect your favourites, track your reading journey, and make every chapter count.</p>
+        <button class="btn primary" id="exploreBtn">Explore my library ↗</button>
+        <div class="credit">Designed &amp; developed with ♥ by <strong>Payal Makani</strong></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orb"></div><div class="orb two"></div>
+        <div class="book-stack">
+          <div class="book one"><small>THE ART OF</small><b>GROWTH</b><small>YOUR NEXT CHAPTER</small></div>
+          <div class="book two"><small>IMAGINE</small><b>BEYOND<br>THE PAGE</b><small>BOOKVERSE</small></div>
+          <div class="book three"><small>DISCOVER</small><b>NEW<br>WORLDS</b><small>READ • DREAM • REPEAT</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Library statistics">
+      <div class="stat"><span class="symbol">📚</span><div class="label">Total books</div><div class="number" id="totalStat">—</div></div>
+      <div class="stat"><span class="symbol">📖</span><div class="label">Currently reading</div><div class="number" id="readingStat">—</div></div>
+      <div class="stat"><span class="symbol">✓</span><div class="label">Completed</div><div class="number" id="completedStat">—</div></div>
+      <div class="stat"><span class="symbol">★</span><div class="label">Average rating</div><div class="number" id="ratingStat">—</div></div>
+    </section>
+
+    <section id="library">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">THE COLLECTION</span>
+          <h2>Your bookshelf<span class="gradient-text">.</span></h2>
+          <div class="muted">Your next favourite read is waiting to be discovered.</div>
+        </div>
+        <button class="btn primary" id="addLibrary">＋ Add a new book</button>
+      </div>
+
+      <div class="workspace">
+        <div>
+          <div class="toolbar">
+            <input id="search" class="field search" type="search" placeholder="⌕  Search titles, authors..." aria-label="Search books">
+            <select id="categoryFilter" class="field" aria-label="Filter category">
+              <option value="All">All categories</option>
+              <option>Fiction</option><option>Non-Fiction</option><option>Self-Help</option>
+              <option>Technology</option><option>Science</option><option>Productivity</option>
+              <option>Biography</option><option>Other</option>
+            </select>
+            <select id="statusFilter" class="field" aria-label="Filter reading status">
+              <option value="All">All statuses</option>
+              <option>Want to Read</option><option>Reading</option><option>Completed</option>
+            </select>
+            <select id="sort" class="field" aria-label="Sort books">
+              <option value="newest">Newest added</option>
+              <option value="title">Title A–Z</option>
+              <option value="rating">Top rated</option>
+              <option value="year">Publication year</option>
+            </select>
+          </div>
+          <div id="bookGrid" class="book-grid"><div class="loading">Opening your bookshelf ✨</div></div>
+        </div>
+
+        <aside class="panel api-panel">
+          <span class="eyebrow">DEVELOPER CORNER</span>
+          <h2 style="font-size:23px;margin-top:12px">REST API</h2>
+          <p class="muted">Your library is powered by a Node.js and Express API.</p>
+          <div class="api-status"><span class="dot" id="apiDot"></span><span id="apiText">Checking API connection...</span></div>
+
+          <div class="endpoint"><span class="method">GET</span><code>/api/books</code></div>
+          <div class="endpoint"><span class="method post">POST</span><code>/api/books</code></div>
+          <div class="endpoint"><span class="method put">PUT</span><code>/api/books/:id</code></div>
+          <div class="endpoint"><span class="method put">PATCH</span><code>/api/books/:id/status</code></div>
+          <div class="endpoint"><span class="method delete">DELETE</span><code>/api/books/:id</code></div>
+
+          <a class="api-link" href="/api" target="_blank" rel="noopener">View API documentation ↗</a>
+          <p class="muted" style="margin-top:20px;margin-bottom:0">Built with Express.js · JSON · REST architecture</p>
+        </aside>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="brand" style="justify-content:center;margin-bottom:12px"><span class="brand-icon">✦</span><span>Book<span>Verse</span></span></div>
+      Made for curious minds and lifelong learners.<br>
+      Created by <strong>Payal Makani</strong> · Node.js · Express.js · REST API
+    </footer>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="modalTitle">Add a book ✦</h2>
+        <button class="btn" id="closeModal" aria-label="Close form">✕</button>
+      </div>
+      <form id="bookForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="title">Book title *</label>
+            <input class="field" id="title" name="title" required maxlength="120" placeholder="e.g. The Midnight Library">
+          </div>
+          <div class="form-group">
+            <label for="author">Author *</label>
+            <input class="field" id="author" name="author" required maxlength="100" placeholder="Author name">
+          </div>
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select class="field" id="category" name="category" required>
+              <option>Fiction</option><option>Non-Fiction</option><option>Self-Help</option>
+              <option>Technology</option><option>Science</option><option>Productivity</option>
+              <option>Biography</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="year">Publication year</label>
+            <input class="field" id="year" name="year" type="number" min="0" max="2026" value="2024" required>
+          </div>
+          <div class="form-group">
+            <label for="rating">Your rating</label>
+            <select class="field" id="rating" name="rating">
+              <option value="5">★★★★★ — Loved it</option>
+              <option value="4">★★★★☆ — Great</option>
+              <option value="3">★★★☆☆ — Good</option>
+              <option value="2">★★☆☆☆ — Okay</option>
+              <option value="1">★☆☆☆☆ — Not for me</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="status">Reading status</label>
+            <select class="field" id="status" name="status">
+              <option>Want to Read</option><option>Reading</option><option>Completed</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="cover">Book cover image URL (optional)</label>
+            <input class="field" id="cover" name="cover" type="url" placeholder="https://example.com/cover.jpg">
+          </div>
+          <div class="form-group full">
+            <label for="description">Short description</label>
+            <textarea class="field" id="description" name="description" maxlength="500" placeholder="What is this book about?"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn" id="cancelModal">Cancel</button>
+          <button type="submit" class="btn primary" id="saveBtn">Save to library ✦</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden role="status"></div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const grid = $('bookGrid');
+    const form = $('bookForm');
+    let books = [];
+    let editingId = null;
+    let toastTimer;
+
+    async function api(path, options = {}) {
+      const response = await fetch(path, {
+        ...options,
+        headers: {
+          ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+          ...options.headers
+        }
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.message || `Request failed (${response.status})`);
+      return result;
+    }
+
+    function notify(message, error = false) {
+      const toast = $('toast');
+      toast.textContent = message;
+      toast.hidden = false;
+      toast.classList.toggle('error', error);
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.hidden = true, 3200);
+    }
+
+    function escapeHTML(value = '') {
+      return String(value).replace(/[&<>"']/g, char => ({
+        '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+      })[char]);
+    }
+
+    function safeCover(value) {
+      try {
+        const url = new URL(value);
+        return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+      } catch {
+        return '';
+      }
+    }
+
+    async function loadBooks() {
+      grid.innerHTML = '<div class="loading">Finding your stories ✨</div>';
+      try {
+        const params = new URLSearchParams();
+        if ($('search').value.trim()) params.set('q', $('search').value.trim());
+        if ($('categoryFilter').value !== 'All') params.set('category', $('categoryFilter').value);
+        if ($('statusFilter').value !== 'All') params.set('status', $('statusFilter').value);
+
+        const result = await api('/api/books?' + params.toString());
+        books = result.data || [];
+
+        const sort = $('sort').value;
+        if (sort === 'title') books.sort((a,b) => a.title.localeCompare(b.title));
+        if (sort === 'rating') books.sort((a,b) => b.rating-a.rating);
+        if (sort === 'year') books.sort((a,b) => b.year-a.year);
+
+        renderBooks();
+        await loadStats();
+        $('apiDot').style.background = 'var(--green)';
+        $('apiText').textContent = 'Connected · Express API online';
+      } catch (error) {
+        grid.innerHTML = `<div class="empty"><div class="big">⚡</div><h3>API connection failed</h3><p class="muted">${escapeHTML(error.message)}<br>Check the deployment and try refreshing.</p><button class="btn primary" onclick="loadBooks()">Retry connection</button></div>`;
+        $('apiDot').style.background = 'var(--red)';
+        $('apiText').textContent = 'API unavailable';
+        ['totalStat','readingStat','completedStat','ratingStat'].forEach(id => $(id).textContent = '—');
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const result = await api('/api/stats');
+        const s = result.data;
+        $('totalStat').textContent = s.total;
+        $('readingStat').textContent = s.reading;
+        $('completedStat').textContent = s.completed;
+        $('ratingStat').textContent = s.averageRating + ' ★';
+      } catch {}
+    }
+
+    function renderBooks() {
+      if (!books.length) {
+        grid.innerHTML = `<div class="empty"><div class="big">📚</div><h3>Your next chapter starts here</h3><p class="muted">No books match your search. Add a new book or clear the filters.</p><button class="btn primary" onclick="openModal()">＋ Add your first book</button></div>`;
+        return;
+      }
+
+      grid.innerHTML = books.map((book, index) => {
+        const cover = safeCover(book.cover || '');
+        const coverHTML = cover
+          ? `<img src="${escapeHTML(cover)}" alt="Cover of ${escapeHTML(book.title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="cover-fallback" style="display:none">📚</div>`
+          : '<div class="cover-fallback">📚</div>';
+
+        return `
+          <article class="book-card" style="animation-delay:${Math.min(index,8)*55}ms">
+            <div class="cover">
+              ${coverHTML}
+              <span class="status">${escapeHTML(book.status)}</span>
+            </div>
+            <div class="book-info">
+              <span class="category">${escapeHTML(book.category)} · ${escapeHTML(book.year)}</span>
+              <h3>${escapeHTML(book.title)}</h3>
+              <div class="author">by ${escapeHTML(book.author)}</div>
+              <p class="description">${escapeHTML(book.description || 'A new addition to your reading journey.')}</p>
+              <div class="stars" aria-label="${book.rating} out of 5 stars">${'★'.repeat(book.rating)}${'☆'.repeat(5-book.rating)}</div>
+              <div class="card-bottom">
+                <select class="field" style="padding:7px 5px;font-size:11px;max-width:135px" aria-label="Change status for ${escapeHTML(book.title)}" onchange="changeStatus(${book.id},this.value)">
+                  ${['Want to Read','Reading','Completed'].map(s => `<option ${s===book.status?'selected':''}>${s}</option>`).join('')}
+                </select>
+                <div class="card-actions">
+                  <button class="icon-btn" title="Edit book" aria-label="Edit ${escapeHTML(book.title)}" onclick="editBook(${book.id})">✎</button>
+                  <button class="icon-btn" title="Delete book" aria-label="Delete ${escapeHTML(book.title)}" onclick="deleteBook(${book.id})">⌫</button>
+                </div>
+              </div>
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    function openModal(book = null) {
+      editingId = book ? book.id : null;
+      form.reset();
+      $('modalTitle').textContent = book ? 'Edit your book ✦' : 'Add a book ✦';
+      $('saveBtn').textContent = book ? 'Save changes ✓' : 'Save to library ✦';
+      $('year').value = book ? book.year : 2024;
+
+      if (book) {
+        for (const key of ['title','author','category','year','rating','status','cover','description']) {
+          if (form.elements[key]) form.elements[key].value = book[key] ?? '';
+        }
+      }
+
+      $('modalBackdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => $('title').focus(), 50);
+    }
+
+    function closeModal() {
+      $('modalBackdrop').classList.remove('open');
+      document.body.style.overflow = '';
+      editingId = null;
+    }
+
+    async function saveBook(event) {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.year = Number(data.year);
+      data.rating = Number(data.rating);
+
+      const button = $('saveBtn');
+      button.disabled = true;
+      button.textContent = 'Saving...';
+
+      try {
+        if (editingId !== null) {
+          await api('/api/books/' + editingId, {
+            method: 'PUT', body: JSON.stringify(data)
+          });
+          notify('Book updated successfully ✨');
+        } else {
+          await api('/api/books', {
+            method: 'POST', body: JSON.stringify(data)
+          });
+          notify('A new story joined your library 📚');
+        }
+
+        closeModal();
+        await loadBooks();
+      } catch (error) {
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+        button.textContent = editingId !== null ? 'Save changes ✓' : 'Save to library ✦';
+      }
+    }
+
+    function editBook(id) {
+      const book = books.find(item => item.id === id);
+      if (book) openModal(book);
+    }
+
+    async function deleteBook(id) {
+      const book = books.find(item => item.id === id);
+      if (!book || !confirm(`Remove "${book.title}" from your collection?`)) return;
+
+      try {
+        await api('/api/books/' + id, { method: 'DELETE' });
+        notify('Book removed from your library.');
+        await loadBooks();
+      } catch (error) {
+        notify(error.message, true);
+      }
+    }
+
+    async function changeStatus(id, status) {
+      try {
+        await api('/api/books/' + id + '/status', {
+          method: 'PATCH',
+          body: JSON.stringify({ status })
+        });
+        notify('Reading status updated ✓');
+        await loadBooks();
+      } catch (error) {
+        notify(error.message, true);
+        await loadBooks();
+      }
+    }
+
+    $('addTop').addEventListener('click', () => openModal());
+    $('addLibrary').addEventListener('click', () => openModal());
+    $('exploreBtn').addEventListener('click', () => $('library').scrollIntoView({behavior:'smooth'}));
+    $('closeModal').addEventListener('click', closeModal);
+    $('cancelModal').addEventListener('click', closeModal);
+    $('modalBackdrop').addEventListener('click', event => {
+      if (event.target === $('modalBackdrop')) closeModal();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeModal();
+    });
+    form.addEventListener('submit', saveBook);
+
+    let searchTimer;
+    $('search').addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(loadBooks, 250);
+    });
+    ['categoryFilter','statusFilter','sort'].forEach(id => $(id).addEventListener('change', loadBooks));
+
+    $('themeBtn').addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      $('themeBtn').innerHTML = document.body.classList.contains('light')
+        ? '☾ <span class="theme-label">Dark theme</span>'
+        : '☼ <span class="theme-label">Light theme</span>';
+    });
+
+    // Lightweight animated particles; no external animation library needed.
+    const canvas = $('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let frame = 0;
+
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = innerWidth * dpr;
+      canvas.height = innerHeight * dpr;
+      canvas.style.width = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      particles = Array.from({length: Math.min(55, Math.floor(innerWidth/20))}, () => ({
+        x: Math.random()*innerWidth,
+        y: Math.random()*innerHeight,
+        r: Math.random()*1.8+.5,
+        v: Math.random()*.25+.08,
+        a: Math.random()*.5+.12
+      }));
+    }
+
+    function animateParticles() {
+      if (document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        requestAnimationFrame(animateParticles);
+        return;
+      }
+      ctx.clearRect(0,0,innerWidth,innerHeight);
+      for (const p of particles) {
+        p.y -= p.v;
+        if (p.y < -5) { p.y = innerHeight+5; p.x = Math.random()*innerWidth; }
+        const twinkle = .65 + Math.sin(frame*.018+p.x)*.35;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle = `rgba(196,181,253,${p.a*twinkle})`;
+        ctx.fill();
+      }
+      frame++;
+      requestAnimationFrame(animateParticles);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    animateParticles();
+    loadBooks();
+  </script>
+</body>
+</html>
