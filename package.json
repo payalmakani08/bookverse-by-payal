@@ -1,12 +1,13 @@
+
 {
   "name": "bookverse-by-payal",
   "version": "1.0.0",
-  "description": "An interactive book collection REST API built by Payal Makani",
+  "description": "Book collection REST API by Payal Makani",
   "main": "index.js",
   "scripts": {
-  "start": "node index.js",
-  "build": "echo Build complete"
-}
+    "start": "node index.js",
+    "build": "echo Build complete"
+  },
   "engines": {
     "node": "22.x"
   },
@@ -14,3 +15,4 @@
     "express": "^4.21.2"
   }
 }
+
