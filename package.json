@@ -1,0 +1,14 @@
+
+{
+  "name": "bookverse-by-payal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BookVerse - RESTful book collection manager by Payal Makani",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
