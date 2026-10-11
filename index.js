@@ -1,199 +1,171 @@
-
-const express = require('express');
+const express = require("express");
+const path = require("path");
 
 const app = express();
-app.use(express.json({ limit: '100kb' }));
+const PORT = process.env.PORT || 3000;
 
-let nextId = 4;
+app.use(express.json({ limit: "1mb" }));
+app.use(express.static(path.join(__dirname, "public")));
 
 let books = [
   {
     id: 1,
-    title: 'Atomic Habits',
-    author: 'James Clear',
-    category: 'Self-Help',
+    title: "Atomic Habits",
+    author: "James Clear",
+    category: "Self-Help",
     year: 2018,
-    rating: 5,
-    status: 'Reading',
-    cover: 'https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg',
-    description: 'Small habits can lead to remarkable results.'
+    rating: 4.8,
+    status: "Completed",
+    cover: "https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg",
+    description: "Small habits can lead to remarkable results."
   },
   {
     id: 2,
-    title: 'The Alchemist',
-    author: 'Paulo Coelho',
-    category: 'Fiction',
-    year: 1988,
-    rating: 5,
-    status: 'Completed',
-    cover: 'https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg',
-    description: 'A journey of dreams, purpose and self-discovery.'
+    title: "Clean Code",
+    author: "Robert C. Martin",
+    category: "Technology",
+    year: 2008,
+    rating: 4.7,
+    status: "Reading",
+    cover: "https://covers.openlibrary.org/b/isbn/9780132350884-L.jpg",
+    description: "A practical guide to writing readable software."
   },
   {
     id: 3,
-    title: 'Deep Work',
-    author: 'Cal Newport',
-    category: 'Productivity',
-    year: 2016,
-    rating: 4,
-    status: 'Want to Read',
-    cover: 'https://covers.openlibrary.org/b/isbn/9781455586691-L.jpg',
-    description: 'Learn to focus without distraction.'
+    title: "The Alchemist",
+    author: "Paulo Coelho",
+    category: "Fiction",
+    year: 1988,
+    rating: 4.6,
+    status: "Want to Read",
+    cover: "https://covers.openlibrary.org/b/isbn/9780061122415-L.jpg",
+    description: "A journey about dreams, courage, and discovering your path."
   }
 ];
 
-const categories = [
-  'Fiction',
-  'Non-Fiction',
-  'Self-Help',
-  'Technology',
-  'Science',
-  'Productivity',
-  'Biography',
-  'Other'
-];
+let nextId = 4;
 
-const statuses = ['Want to Read', 'Reading', 'Completed'];
+const validStatuses = ["Want to Read", "Reading", "Completed"];
+
+function sendSuccess(res, data, status = 200) {
+  return res.status(status).json({ success: true, data });
+}
 
 function validateBook(body) {
-  const { title, author, category, year, rating, status, cover, description } = body;
-
-  if (
-    typeof title !== 'string' || !title.trim() ||
-    typeof author !== 'string' || !author.trim()
-  ) {
-    return 'A book title and author are required.';
+  if (!body.title || !String(body.title).trim()) {
+    return "Book title is required.";
   }
 
-  if (!categories.includes(category)) {
-    return 'Please select a valid category.';
+  if (!body.author || !String(body.author).trim()) {
+    return "Author name is required.";
   }
 
-  if (
-    !Number.isInteger(Number(year)) ||
-    Number(year) < 0 ||
-    Number(year) > new Date().getFullYear()
-  ) {
-    return 'Please enter a valid publication year.';
-  }
-
-  if (!Number.isInteger(Number(rating)) || Number(rating) < 1 || Number(rating) > 5) {
-    return 'Rating must be a whole number from 1 to 5.';
-  }
-
-  if (!statuses.includes(status)) {
-    return 'Please select a valid reading status.';
-  }
-
-  for (const [field, value] of Object.entries({ cover, description })) {
-    if (value !== undefined && typeof value !== 'string') {
-      return `${field} must be text.`;
-    }
+  if (body.status && !validStatuses.includes(body.status)) {
+    return "Invalid reading status.";
   }
 
   return null;
 }
 
-function cleanBook(body, id) {
-  return {
-    id,
-    title: body.title.trim(),
-    author: body.author.trim(),
-    category: body.category,
-    year: Number(body.year),
-    rating: Number(body.rating),
-    status: body.status,
-    cover: typeof body.cover === 'string' ? body.cover.trim() : '',
-    description: typeof body.description === 'string'
-      ? body.description.trim()
-      : ''
-  };
-}
-
-app.get('/api', (req, res) => {
-  res.json({
-    name: 'BookVerse API',
-    creator: 'Payal Makani',
-    version: '1.0.0',
+// API home
+app.get("/api", (req, res) => {
+  sendSuccess(res, {
+    name: "BookVerse API",
+    developer: "Payal Makani",
+    version: "1.0.0",
     endpoints: [
-      'GET /api/books',
-      'GET /api/books/:id',
-      'POST /api/books',
-      'PUT /api/books/:id',
-      'PATCH /api/books/:id/status',
-      'DELETE /api/books/:id',
-      'GET /api/stats'
+      "GET /api/books",
+      "GET /api/books/:id",
+      "POST /api/books",
+      "PUT /api/books/:id",
+      "PATCH /api/books/:id/status",
+      "DELETE /api/books/:id",
+      "GET /api/stats"
     ]
   });
 });
 
-app.get('/api/books', (req, res) => {
+// Get all books
+app.get("/api/books", (req, res) => {
   let result = [...books];
 
-  const q = String(req.query.q || '').toLowerCase().trim();
-  const category = String(req.query.category || '');
-  const status = String(req.query.status || '');
-
-  if (q) {
+  if (req.query.search) {
+    const search = String(req.query.search).toLowerCase();
     result = result.filter(book =>
-      book.title.toLowerCase().includes(q) ||
-      book.author.toLowerCase().includes(q) ||
-      book.description.toLowerCase().includes(q)
+      book.title.toLowerCase().includes(search) ||
+      book.author.toLowerCase().includes(search)
     );
   }
 
-  if (category && category !== 'All') {
-    result = result.filter(book => book.category === category);
+  if (req.query.category) {
+    result = result.filter(book => book.category === req.query.category);
   }
 
-  if (status && status !== 'All') {
-    result = result.filter(book => book.status === status);
+  if (req.query.status) {
+    result = result.filter(book => book.status === req.query.status);
   }
 
-  res.json({
-    success: true,
-    count: result.length,
-    data: result
-  });
+  sendSuccess(res, result);
 });
 
-app.get('/api/books/:id', (req, res) => {
+// Get one book
+app.get("/api/books/:id", (req, res) => {
   const book = books.find(item => item.id === Number(req.params.id));
 
   if (!book) {
     return res.status(404).json({
       success: false,
-      message: 'Book not found.'
+      message: "Book not found."
     });
   }
 
-  res.json({ success: true, data: book });
+  sendSuccess(res, book);
 });
 
-app.post('/api/books', (req, res) => {
+// Statistics
+app.get("/api/stats", (req, res) => {
+  const total = books.length;
+  const reading = books.filter(book => book.status === "Reading").length;
+  const completed = books.filter(book => book.status === "Completed").length;
+  const averageRating = total
+    ? Number((books.reduce((sum, book) => sum + Number(book.rating || 0), 0) / total).toFixed(1))
+    : 0;
+
+  sendSuccess(res, { total, reading, completed, averageRating });
+});
+
+// Add a book
+app.post("/api/books", (req, res) => {
   const error = validateBook(req.body);
 
   if (error) {
     return res.status(400).json({ success: false, message: error });
   }
 
-  const book = cleanBook(req.body, nextId++);
-  books.unshift(book);
+  const book = {
+    id: nextId++,
+    title: String(req.body.title).trim(),
+    author: String(req.body.author).trim(),
+    category: req.body.category || "Other",
+    year: Number(req.body.year) || new Date().getFullYear(),
+    rating: Math.min(5, Math.max(0, Number(req.body.rating) || 0)),
+    status: req.body.status || "Want to Read",
+    cover: req.body.cover || "",
+    description: req.body.description || ""
+  };
 
-  res.status(201).json({
-    success: true,
-    message: 'Book created successfully.',
-    data: book
-  });
+  books.push(book);
+  sendSuccess(res, book, 201);
 });
 
-app.put('/api/books/:id', (req, res) => {
+// Update a book
+app.put("/api/books/:id", (req, res) => {
   const index = books.findIndex(item => item.id === Number(req.params.id));
 
   if (index === -1) {
     return res.status(404).json({
       success: false,
-      message: 'Book not found.'
+      message: "Book not found."
     });
   }
 
@@ -203,96 +175,67 @@ app.put('/api/books/:id', (req, res) => {
     return res.status(400).json({ success: false, message: error });
   }
 
-  books[index] = cleanBook(req.body, books[index].id);
+  books[index] = {
+    ...books[index],
+    ...req.body,
+    id: books[index].id,
+    title: String(req.body.title).trim(),
+    author: String(req.body.author).trim()
+  };
 
-  res.json({
-    success: true,
-    message: 'Book updated successfully.',
-    data: books[index]
-  });
+  sendSuccess(res, books[index]);
 });
 
-app.patch('/api/books/:id/status', (req, res) => {
+// Update reading status
+app.patch("/api/books/:id/status", (req, res) => {
   const book = books.find(item => item.id === Number(req.params.id));
 
   if (!book) {
     return res.status(404).json({
       success: false,
-      message: 'Book not found.'
+      message: "Book not found."
     });
   }
 
-  if (!statuses.includes(req.body.status)) {
+  if (!validStatuses.includes(req.body.status)) {
     return res.status(400).json({
       success: false,
-      message: 'Invalid reading status.'
+      message: "Invalid reading status."
     });
   }
 
   book.status = req.body.status;
-
-  res.json({
-    success: true,
-    message: 'Reading status updated.',
-    data: book
-  });
+  sendSuccess(res, book);
 });
 
-app.delete('/api/books/:id', (req, res) => {
+// Delete a book
+app.delete("/api/books/:id", (req, res) => {
   const index = books.findIndex(item => item.id === Number(req.params.id));
 
   if (index === -1) {
     return res.status(404).json({
       success: false,
-      message: 'Book not found.'
+      message: "Book not found."
     });
   }
 
   const deleted = books.splice(index, 1)[0];
-
-  res.json({
-    success: true,
-    message: 'Book deleted successfully.',
-    data: deleted
-  });
+  sendSuccess(res, deleted);
 });
 
-app.get('/api/stats', (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      total: books.length,
-      reading: books.filter(book => book.status === 'Reading').length,
-      completed: books.filter(book => book.status === 'Completed').length,
-      wantToRead: books.filter(book => book.status === 'Want to Read').length,
-      averageRating: books.length
-        ? Number((books.reduce((sum, book) => sum + book.rating, 0) / books.length).toFixed(1))
-        : 0
-    }
-  });
-});
-
-app.use('/api', (req, res) => {
+// Friendly API errors
+app.use("/api", (req, res) => {
   res.status(404).json({
     success: false,
-    message: 'API endpoint not found.'
+    message: "API endpoint not found."
   });
 });
 
-app.use((err, req, res, next) => {
-  console.error(err);
-
-  res.status(500).json({
-    success: false,
-    message: 'Unexpected server error.'
-  });
+// Serve the app's main page
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-if (require.main === module) {
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => {
-    console.log(`BookVerse API running on port ${port}`);
-  });
-}
-
-module.exports = app;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`BookVerse by Payal Makani is running on port ${PORT}`);
+});
