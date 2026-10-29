@@ -2,305 +2,372 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#100d20">
-  <meta name="description" content="BookVerse by Payal Makani — your personal digital library.">
-  <title>BookVerse | Payal Makani</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>BookVerse | Book Store</title>
 
-  <link rel="stylesheet" href="/style.css">
-  <script src="/script.js" defer></script>
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <div class="ambient"></div>
-  <canvas id="particles" aria-hidden="true"></canvas>
 
-  <header class="topbar">
-    <nav class="container nav">
-      <a class="brand" href="#home" aria-label="BookVerse home">
-        <span class="brand-icon">✦</span>
-        <span>Book<span class="brand-accent">Verse</span></span>
-      </a>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
 
-      <div class="nav-actions">
-        <button class="btn" id="themeBtn" type="button">☼ Theme</button>
-        <button class="btn primary" id="addTop" type="button">＋ Add book</button>
-      </div>
+            <a class="navbar-brand" href="#home">
+                📚 BookVerse
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navMenu"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMenu">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#books">Books</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
     </nav>
-  </header>
 
-  <main class="container" id="home">
-    <section class="hero">
-      <div class="hero-content">
-        <span class="eyebrow"><span class="live-dot"></span> YOUR PERSONAL DIGITAL LIBRARY</span>
 
-        <h1>Stories that stay.<br>
-          <span class="gradient-text">Knowledge that grows.</span>
-        </h1>
+    <!-- Header -->
+    <header id="home" class="hero">
 
-        <p>
-          Every book opens a new universe. Collect your favourites,
-          track your reading journey, and make every chapter count.
+        <div class="container">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-7">
+
+                    <h1>
+                        Find your next
+                        <span>favourite book.</span>
+                    </h1>
+
+                    <p>
+                        A small collection of books for readers,
+                        learners and curious minds.
+                    </p>
+
+                    <a href="#books" class="btn btn-primary">
+                        Browse Books
+                    </a>
+
+                </div>
+
+                <div class="col-md-5 text-center mt-4 mt-md-0">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=700&q=80"
+                        alt="Books on a table"
+                        class="hero-image"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- Books Section -->
+    <section id="books" class="container section-space">
+
+        <div class="section-heading">
+
+            <h2>Our Book Collection</h2>
+
+            <p>
+                Explore different books and find something interesting to read.
+            </p>
+
+        </div>
+
+
+        <!-- Search and filter -->
+        <div class="row g-3 book-controls">
+
+            <div class="col-md-6">
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    class="form-control"
+                    placeholder="Search by title or author..."
+                >
+
+            </div>
+
+            <div class="col-md-4">
+
+                <select id="categoryFilter" class="form-select">
+
+                    <option value="All">All Categories</option>
+                    <option value="Fiction">Fiction</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Self Help">Self Help</option>
+                    <option value="Business">Business</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button
+                    class="btn btn-primary w-100"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addBookModal"
+                >
+                    + Add Book
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Book cards -->
+        <div id="bookList" class="row g-4 mt-3">
+
+        </div>
+
+        <p id="noBooksMessage" class="text-center mt-4">
+            No books found.
         </p>
 
-        <button class="btn primary hero-button" id="exploreBtn" type="button">
-          Explore my library ↗
-        </button>
-
-        <div class="credit">
-          Designed and developed with ♥ by <strong>Payal Makani</strong>
-        </div>
-      </div>
-
-      <div class="hero-art" aria-hidden="true">
-        <div class="orbit orbit-one"></div>
-        <div class="orbit orbit-two"></div>
-
-        <div class="book-stack">
-          <div class="art-book art-book-one">
-            <small>THE ART OF</small>
-            <strong>GROWTH</strong>
-            <small>YOUR NEXT CHAPTER</small>
-          </div>
-          <div class="art-book art-book-two">
-            <small>IMAGINE</small>
-            <strong>BEYOND<br>THE PAGE</strong>
-            <small>BOOKVERSE</small>
-          </div>
-          <div class="art-book art-book-three">
-            <small>DISCOVER</small>
-            <strong>NEW<br>WORLDS</strong>
-            <small>READ · DREAM · REPEAT</small>
-          </div>
-        </div>
-        <span class="floating floating-one">✦</span>
-        <span class="floating floating-two">♡</span>
-      </div>
     </section>
 
-    <section class="stats" aria-label="Reading statistics">
-      <article class="stat">
-        <span class="stat-icon">📚</span>
-        <div class="stat-label">Total books</div>
-        <div class="stat-number" id="totalStat">0</div>
-      </article>
 
-      <article class="stat">
-        <span class="stat-icon">📖</span>
-        <div class="stat-label">Currently reading</div>
-        <div class="stat-number" id="readingStat">0</div>
-      </article>
+    <!-- About -->
+    <section id="about" class="about-section">
 
-      <article class="stat">
-        <span class="stat-icon">✓</span>
-        <div class="stat-label">Completed</div>
-        <div class="stat-number" id="completedStat">0</div>
-      </article>
+        <div class="container text-center">
 
-      <article class="stat">
-        <span class="stat-icon">★</span>
-        <div class="stat-label">Average rating</div>
-        <div class="stat-number" id="ratingStat">—</div>
-      </article>
+            <h2>About BookVerse</h2>
+
+            <p>
+                BookVerse is a simple online book store project created
+                to explore books and practice web development.
+                It brings together a small collection of books in
+                one place.
+            </p>
+
+        </div>
+
     </section>
 
-    <section id="library" class="library-section">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">THE COLLECTION</span>
-          <h2>Your bookshelf<span class="gradient-text">.</span></h2>
-          <p class="muted">Your next favourite read is waiting to be discovered.</p>
-        </div>
-        <button class="btn primary" id="addLibrary" type="button">＋ Add a new book</button>
-      </div>
 
-      <div class="workspace">
-        <div class="collection">
-          <div class="toolbar">
-            <input
-              class="field search-field"
-              id="search"
-              type="search"
-              placeholder="⌕ Search titles and authors..."
-              aria-label="Search books"
-            >
+    <!-- Add Book Modal -->
+    <div
+        class="modal fade"
+        id="addBookModal"
+        tabindex="-1"
+        aria-labelledby="addBookModalLabel"
+        aria-hidden="true"
+    >
 
-            <select class="field" id="categoryFilter" aria-label="Filter by category">
-              <option value="All">All categories</option>
-              <option>Fiction</option>
-              <option>Non-Fiction</option>
-              <option>Self-Help</option>
-              <option>Technology</option>
-              <option>Science</option>
-              <option>Productivity</option>
-              <option>Biography</option>
-              <option>Other</option>
-            </select>
+        <div class="modal-dialog modal-dialog-centered">
 
-            <select class="field" id="statusFilter" aria-label="Filter by reading status">
-              <option value="All">All statuses</option>
-              <option>Want to Read</option>
-              <option>Reading</option>
-              <option>Completed</option>
-            </select>
+            <div class="modal-content">
 
-            <select class="field" id="sort" aria-label="Sort books">
-              <option value="newest">Newest added</option>
-              <option value="title">Title A–Z</option>
-              <option value="rating">Top rated</option>
-              <option value="year">Publication year</option>
-            </select>
-          </div>
+                <div class="modal-header">
 
-          <div id="bookGrid" class="book-grid" aria-live="polite">
-            <div class="loading">Opening your bookshelf ✨</div>
-          </div>
-        </div>
+                    <h5 class="modal-title" id="addBookModalLabel">
+                        Add a Book
+                    </h5>
 
-        <aside class="panel api-panel">
-          <span class="eyebrow">DEVELOPER CORNER</span>
-          <h2 class="api-heading">REST API</h2>
-          <p class="muted">
-            Powered by Node.js, Express.js and a RESTful API.
-          </p>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
 
-          <div class="api-status">
-            <span id="apiDot" class="status-dot"></span>
-            <span id="apiText">Connecting to API...</span>
-          </div>
+                </div>
 
-          <div class="endpoint">
-            <span class="method get">GET</span>
-            <code>/api/books</code>
-          </div>
-          <div class="endpoint">
-            <span class="method post">POST</span>
-            <code>/api/books</code>
-          </div>
-          <div class="endpoint">
-            <span class="method put">PUT</span>
-            <code>/api/books/:id</code>
-          </div>
-          <div class="endpoint">
-            <span class="method patch">PATCH</span>
-            <code>/api/books/:id/status</code>
-          </div>
-          <div class="endpoint">
-            <span class="method delete">DELETE</span>
-            <code>/api/books/:id</code>
-          </div>
+                <div class="modal-body">
 
-          <a class="api-link" href="/api" target="_blank" rel="noopener">
-            Explore API documentation ↗
-          </a>
+                    <form id="addBookForm">
 
-          <p class="muted api-note">
-            Express.js · JSON · CRUD operations
-          </p>
-        </aside>
-      </div>
-    </section>
+                        <div class="mb-3">
 
-    <footer class="footer">
-      <div class="footer-brand">✦ Book<span>Verse</span></div>
-      <p>A little space for your biggest reading adventures.</p>
-      <p>Crafted with ♥ by <strong>Payal Makani</strong></p>
-      <small>HTML · CSS · JavaScript · Node.js · Express.js</small>
-    </footer>
-  </main>
+                            <label for="bookTitle" class="form-label">
+                                Book Title
+                            </label>
 
-  <div
-    class="modal-backdrop"
-    id="modalBackdrop"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modalTitle"
-    aria-hidden="true"
-  >
-    <div class="modal">
-      <div class="modal-heading">
-        <div>
-          <span class="eyebrow">YOUR NEXT CHAPTER</span>
-          <h2 id="modalTitle">Add a book ✦</h2>
-        </div>
-        <button class="btn close-button" id="closeModal" type="button" aria-label="Close form">✕</button>
-      </div>
+                            <input
+                                type="text"
+                                id="bookTitle"
+                                class="form-control"
+                                required
+                            >
 
-      <form id="bookForm">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="title">Book title *</label>
-            <input class="field" id="title" name="title" maxlength="120" required placeholder="The Midnight Library">
-          </div>
+                        </div>
 
-          <div class="form-group">
-            <label for="author">Author *</label>
-            <input class="field" id="author" name="author" maxlength="100" required placeholder="Author name">
-          </div>
+                        <div class="mb-3">
 
-          <div class="form-group">
-            <label for="category">Category *</label>
-            <select class="field" id="category" name="category" required>
-              <option>Fiction</option>
-              <option>Non-Fiction</option>
-              <option>Self-Help</option>
-              <option>Technology</option>
-              <option>Science</option>
-              <option>Productivity</option>
-              <option>Biography</option>
-              <option>Other</option>
-            </select>
-          </div>
+                            <label for="bookAuthor" class="form-label">
+                                Author
+                            </label>
 
-          <div class="form-group">
-            <label for="year">Publication year *</label>
-            <input class="field" id="year" name="year" type="number" min="0" max="2026" value="2024" required>
-          </div>
+                            <input
+                                type="text"
+                                id="bookAuthor"
+                                class="form-control"
+                                required
+                            >
 
-          <div class="form-group">
-            <label for="rating">Your rating</label>
-            <select class="field" id="rating" name="rating">
-              <option value="5">★★★★★ — Loved it</option>
-              <option value="4">★★★★☆ — Great</option>
-              <option value="3">★★★☆☆ — Good</option>
-              <option value="2">★★☆☆☆ — Okay</option>
-              <option value="1">★☆☆☆☆ — Not for me</option>
-            </select>
-          </div>
+                        </div>
 
-          <div class="form-group">
-            <label for="status">Reading status</label>
-            <select class="field" id="status" name="status">
-              <option>Want to Read</option>
-              <option>Reading</option>
-              <option>Completed</option>
-            </select>
-          </div>
+                        <div class="mb-3">
 
-          <div class="form-group full-width">
-            <label for="cover">Book cover image URL (optional)</label>
-            <input class="field" id="cover" name="cover" type="url" placeholder="https://example.com/cover.jpg">
-          </div>
+                            <label for="bookCategory" class="form-label">
+                                Category
+                            </label>
 
-          <div class="form-group full-width">
-            <label for="description">Description</label>
-            <textarea class="field" id="description" name="description" maxlength="500" rows="3" placeholder="What is this book about?"></textarea>
-          </div>
+                            <select id="bookCategory" class="form-select">
+
+                                <option value="Fiction">Fiction</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Self Help">Self Help</option>
+                                <option value="Business">Business</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label for="bookPrice" class="form-label">
+                                Price (₹)
+                            </label>
+
+                            <input
+                                type="number"
+                                id="bookPrice"
+                                class="form-control"
+                                min="0"
+                                step="1"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label for="bookImage" class="form-label">
+                                Book Image URL
+                            </label>
+
+                            <input
+                                type="url"
+                                id="bookImage"
+                                class="form-control"
+                                placeholder="https://example.com/book.jpg"
+                            >
+
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            Save Book
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="form-actions">
-          <button class="btn" type="button" id="cancelModal">Cancel</button>
-          <button class="btn primary" type="submit" id="saveBtn">Save to library ✦</button>
-        </div>
-      </form>
     </div>
-  </div>
 
-  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <!-- Contact -->
+    <section id="contact" class="contact-section">
+
+        <div class="container text-center">
+
+            <h2>Contact</h2>
+
+            <p>
+                Have a question or suggestion about BookVerse?
+            </p>
+
+            <a href="mailto:your-email@example.com" class="btn btn-light">
+                Contact Us
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <div class="container text-center">
+
+            <p>📚 BookVerse</p>
+
+            <p class="footer-small">
+                A student web development project.
+            </p>
+
+            <p class="footer-small">
+                © <span id="currentYear"></span> BookVerse
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- Bootstrap JS -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+
 </body>
-</html>
+  </html>
+
