@@ -1,10 +1,22 @@
 
-/* General */
+/* ==============================
+   GENERAL
+============================== */
+
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     color: #30343b;
-    background-color: #ffffff;
+
+    background: linear-gradient(
+        135deg,
+        #f8f0ff 0%,
+        #fff1f5 35%,
+        #edf5ff 70%,
+        #fff8ed 100%
+    );
+
+    background-attachment: fixed;
 }
 
 html {
@@ -12,9 +24,18 @@ html {
 }
 
 
-/* Navigation */
+/* ==============================
+   NAVIGATION
+============================== */
+
 .navbar {
-    background: linear-gradient(90deg, #425f83, #6c86a8);
+    background: linear-gradient(
+        90deg,
+        #65548f,
+        #9276b5,
+        #bd8da9
+    );
+
     padding: 14px 0;
 }
 
@@ -29,18 +50,22 @@ html {
 }
 
 .nav-link:hover {
-    color: #dceaff !important;
+    color: #ffe6f2 !important;
 }
 
 
-/* Header */
+/* ==============================
+   HEADER
+============================== */
+
 .hero {
     padding: 65px 0;
+
     background: linear-gradient(
-        135deg,
-        #eaf2ff,
-        #f3edff,
-        #f8f1e9
+        120deg,
+        #e6d6ff 0%,
+        #fce1ed 45%,
+        #dceeff 100%
     );
 }
 
@@ -48,10 +73,11 @@ html {
     font-size: 42px;
     font-weight: bold;
     line-height: 1.3;
+    color: #343047;
 }
 
 .hero h1 span {
-    color: #425f83;
+    color: #7355a6;
 }
 
 .hero p {
@@ -70,19 +96,35 @@ html {
 }
 
 
-/* Buttons */
+/* ==============================
+   BUTTONS
+============================== */
+
 .btn-primary {
-    background-color: #425f83;
-    border-color: #425f83;
+    background: linear-gradient(
+        120deg,
+        #7659a8,
+        #a17ac4
+    );
+
+    border: none;
+    border-radius: 7px;
+    padding: 10px 18px;
 }
 
 .btn-primary:hover {
-    background-color: #304969;
-    border-color: #304969;
+    background: linear-gradient(
+        120deg,
+        #60458f,
+        #8865b2
+    );
 }
 
 
-/* Sections */
+/* ==============================
+   GENERAL SECTIONS
+============================== */
+
 .section-space {
     padding-top: 60px;
     padding-bottom: 60px;
@@ -94,7 +136,7 @@ html {
 }
 
 .section-heading h2 {
-    color: #425f83;
+    color: #65548f;
     font-weight: bold;
     margin-bottom: 12px;
 }
@@ -104,7 +146,10 @@ html {
 }
 
 
-/* Search */
+/* ==============================
+   SEARCH AND FILTER
+============================== */
+
 .book-controls {
     margin-top: 25px;
 }
@@ -113,36 +158,57 @@ html {
 .form-select {
     padding: 11px;
     border-radius: 8px;
-    border-color: #d9e0e9;
+    border-color: #ddd5e8;
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: #7899c0;
-    box-shadow: 0 0 0 0.15rem rgba(66, 95, 131, 0.15);
+    border-color: #a78bca;
+
+    box-shadow: 0 0 0 0.15rem
+        rgba(145, 115, 185, 0.2);
 }
 
 
-/* Book cards */
+/* ==============================
+   BOOK CARDS
+============================== */
+
 .book-card {
     height: 100%;
-    background: #ffffff;
-    border: 1px solid #e1e5eb;
+
+    background: linear-gradient(
+        145deg,
+        #ffffff,
+        #fcf8ff
+    );
+
+    border: 1px solid #e8dff2;
     border-radius: 10px;
     overflow: hidden;
 
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease;
 }
 
 .book-card:hover {
     transform: translateY(-4px);
+
+    box-shadow: 0 8px 22px
+        rgba(111, 83, 145, 0.12);
 }
 
 .book-cover {
     width: 100%;
     height: 240px;
     object-fit: cover;
-    background-color: #f0f2f5;
+
+    background: linear-gradient(
+        135deg,
+        #f1e6ff,
+        #ffe9f2
+    );
 }
 
 .book-content {
@@ -150,7 +216,7 @@ html {
 }
 
 .book-content h5 {
-    color: #344f70;
+    color: #51416e;
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 8px;
@@ -163,9 +229,17 @@ html {
 
 .book-category {
     display: inline-block;
+
     font-size: 12px;
-    background-color: #edf3fb;
-    color: #425f83;
+
+    background: linear-gradient(
+        120deg,
+        #f0e5ff,
+        #fce5f1
+    );
+
+    color: #69518e;
+
     padding: 5px 10px;
     border-radius: 20px;
     margin: 8px 0;
@@ -173,27 +247,45 @@ html {
 
 .book-price {
     font-weight: bold;
-    color: #30343b;
+    color: #343047;
     font-size: 17px;
 }
 
+
+/* ==============================
+   FAVORITE BUTTON
+============================== */
+
 .favorite-btn {
-    border: 1px solid #d6dce5;
-    background: white;
+    border: 1px solid #d6c9e5;
+    background: linear-gradient(
+        120deg,
+        #ffffff,
+        #f9f1ff
+    );
+
     border-radius: 7px;
     padding: 6px 10px;
 }
 
 .favorite-btn:hover {
-    background: #f6f1ff;
+    background: #f2e6ff;
 }
+
+
+/* ==============================
+   REMOVE BUTTON
+============================== */
 
 .remove-btn {
     margin-top: 8px;
 }
 
 
-/* Empty state */
+/* ==============================
+   EMPTY MESSAGE
+============================== */
+
 #noBooksMessage {
     display: none;
     color: #6b7078;
@@ -201,18 +293,23 @@ html {
 }
 
 
-/* About section */
+/* ==============================
+   ABOUT SECTION
+============================== */
+
 .about-section {
     padding: 55px 20px;
+
     background: linear-gradient(
-        120deg,
-        #f0f5fb,
-        #f5f0ff
+        135deg,
+        #fce8f1 0%,
+        #f2e8ff 50%,
+        #e5f2ff 100%
     );
 }
 
 .about-section h2 {
-    color: #425f83;
+    color: #65548f;
     font-weight: bold;
     margin-bottom: 15px;
 }
@@ -225,14 +322,20 @@ html {
 }
 
 
-/* Contact */
+/* ==============================
+   CONTACT SECTION
+============================== */
+
 .contact-section {
     padding: 45px 20px;
+
     background: linear-gradient(
         120deg,
-        #425f83,
-        #7088a9
+        #65548f,
+        #9276b5,
+        #bd8da9
     );
+
     color: white;
 }
 
@@ -242,10 +345,19 @@ html {
 }
 
 
-/* Footer */
+/* ==============================
+   FOOTER
+============================== */
+
 .footer {
     padding: 25px 10px;
-    background-color: #263545;
+
+    background: linear-gradient(
+        90deg,
+        #29263c,
+        #3c3555
+    );
+
     color: white;
 }
 
@@ -254,12 +366,15 @@ html {
 }
 
 .footer-small {
-    color: #cbd5e1;
+    color: #d8d2e5;
     font-size: 14px;
 }
 
 
-/* Responsive layout */
+/* ==============================
+   RESPONSIVE DESIGN
+============================== */
+
 @media (max-width: 768px) {
 
     .hero {
@@ -270,6 +385,10 @@ html {
         font-size: 32px;
     }
 
+    .hero p {
+        font-size: 16px;
+    }
+
     .hero-image {
         height: 220px;
     }
@@ -277,6 +396,10 @@ html {
     .section-space {
         padding-top: 45px;
         padding-bottom: 45px;
+    }
+
+    .book-cover {
+        height: 200px;
     }
 
 }
